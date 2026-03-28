@@ -14,7 +14,6 @@ const protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) return next(new error("User no longer exists", 401));
   req.user = currentUser;
-  res.send(decoded.id);
   next();
 });
 

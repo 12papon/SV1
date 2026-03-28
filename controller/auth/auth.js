@@ -38,8 +38,6 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new error("invalid email or password", 401));
   }
   const { accessToken, refreshToken } = generateToken(user);
-  console.log(accessToken);
-  console.log(refreshToken);
 
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
@@ -55,4 +53,11 @@ export const login = catchAsync(async (req, res, next) => {
     data: user,
     accessToken,
   });
+});
+
+export const logout = catchAsync(async (req, res, next) => {
+  const token = req.cookies.refreshToken;
+  await User.findOneAndUpdate({ refreshToken: token }, { refreshToken: "" });
+  res.clearCookie("refreshToken");
+  res.sendStatus(204);
 });
