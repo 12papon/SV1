@@ -1,6 +1,5 @@
 import User from "../../model/userModel.js";
 import catchAsync from "../../utils/catchAsync.js";
-import jwt from "jsonwebtoken";
 import error from "../../utils/error.js";
 import generateToken from "../../service/generateToken.js";
 
@@ -34,11 +33,13 @@ export const signup = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+
   if (!user) {
     return next(new error("invalid email or password", 401));
   }
   const { accessToken, refreshToken } = generateToken(user);
-
+  // const isMatch = await user.correctPassword(password, user.password);
+  // console.log(isMatch);
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
 
@@ -57,7 +58,11 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const logout = catchAsync(async (req, res, next) => {
   const token = req.cookies.refreshToken;
+  console.log(token);
+
   await User.findOneAndUpdate({ refreshToken: token }, { refreshToken: "" });
   res.clearCookie("refreshToken");
-  res.sendStatus(204);
+  res.status(200).json({
+    message: "Logout successfully!",
+  });
 });

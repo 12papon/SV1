@@ -1,7 +1,8 @@
 import express from "express";
-import { login, signup } from "../controller/auth/auth.js";
+import { login, signup, logout } from "../controller/auth/auth.js";
 import protect from "../middleware/jwt/tokenVerify.js";
 import { refresh } from "../middleware/jwt/tokenRefresh.js";
+import { createProduct } from "../controller/product/product.js";
 
 const router = express.Router();
 
@@ -17,6 +18,8 @@ router.get("/get", protect, (req, res) => {
 });
 router.post("/user", signup);
 router.post("/login", login);
+router.post("/logout", logout);
 router.post("/refresh", refresh);
+router.post("/createp", createProduct);
 
 export default router;

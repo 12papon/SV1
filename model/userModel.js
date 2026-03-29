@@ -8,7 +8,7 @@ const userModel = new mongoose.Schema(
       type: Number,
       trim: true,
       required: true,
-      select: false,
+      // select: false,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "দয়া করে একটি সঠিক ইমেইল দিন",
@@ -19,7 +19,13 @@ const userModel = new mongoose.Schema(
   { timestamps: true },
 );
 
-userModel.methods.correctPassword = function (candidatePassword, userPassword) {
+userModel.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  console.log(candidatePassword);
+  console.log(userPassword);
+
   return candidatePassword === userPassword;
 };
 const User = mongoose.model("User", userModel);
