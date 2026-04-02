@@ -16,7 +16,7 @@ const corsOptions = {
   methods: ["GET", "PUT", "POST", "DELETE", "PETCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 204,
+  //optionsSuccessStatus: 204,
 };
 
 export default corsOptions;

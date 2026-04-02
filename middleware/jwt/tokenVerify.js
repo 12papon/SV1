@@ -5,7 +5,15 @@ import { promisify } from "util";
 import User from "../../model/userModel.js";
 
 const protect = catchAsync(async (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  console.log(token);
   if (!token) return next(new error("You are not logged in", 401));
   const decoded = await promisify(jwt.verify)(
     token,

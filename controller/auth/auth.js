@@ -41,6 +41,7 @@ export const login = catchAsync(async (req, res, next) => {
   // const isMatch = await user.correctPassword(password, user.password);
   // console.log(isMatch);
   user.refreshToken = refreshToken;
+
   await user.save({ validateBeforeSave: false });
 
   res.cookie("refreshToken", refreshToken, {
@@ -48,11 +49,14 @@ export const login = catchAsync(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000, // ৭ দিন
   });
-
+  const userObj = {
+    name: user.name,
+    token: accessToken,
+    id: user._id,
+  };
   res.status(200).json({
     status: "Success",
-    data: user,
-    accessToken,
+    data: userObj,
   });
 });
 
@@ -65,4 +69,18 @@ export const logout = catchAsync(async (req, res, next) => {
   res.status(200).json({
     message: "Logout successfully!",
   });
+});
+
+//patching
+export const userPatch = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const data = req.body;
+  console.log(id);
+  console.log(data);
+
+  const user = await User.findOneAndUpdate({ _id: id }, data, {
+    runValidators: true,
+    returnDocument: "after",
+  });
+  res.send(user);
 });
